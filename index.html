@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>PHANTOM — Private encrypted messenger that works where others are blocked</title>
+<meta name="description" content="PHANTOM is a free, end-to-end encrypted messenger for Android that keeps working where other apps are blocked. No phone number, no email, no tracking." />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0F1010" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://myphantom.org/" />
+
+<!-- Localized variants (same URL serves all languages; lang chosen client-side) -->
+<link rel="alternate" hreflang="en" href="https://myphantom.org/" />
+<link rel="alternate" hreflang="ru" href="https://myphantom.org/" />
+<link rel="alternate" hreflang="ar" href="https://myphantom.org/" />
+<link rel="alternate" hreflang="es" href="https://myphantom.org/" />
+<link rel="alternate" hreflang="fa" href="https://myphantom.org/" />
+<link rel="alternate" hreflang="fr" href="https://myphantom.org/" />
+<link rel="alternate" hreflang="tr" href="https://myphantom.org/" />
+<link rel="alternate" hreflang="zh" href="https://myphantom.org/" />
+<link rel="alternate" hreflang="x-default" href="https://myphantom.org/" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="PHANTOM" />
+<meta property="og:title" content="PHANTOM — Private encrypted messenger that works where others are blocked" />
+<meta property="og:description" content="Free, end-to-end encrypted messenger for Android. No phone number, no email, no tracking. Built to keep working under censorship." />
+<meta property="og:url" content="https://myphantom.org/" />
+<meta property="og:image" content="https://myphantom.org/og.png" />
+<meta property="og:image:alt" content="PHANTOM — private encrypted messenger" />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="PHANTOM — Private encrypted messenger that works where others are blocked" />
+<meta name="twitter:description" content="Free, end-to-end encrypted messenger for Android. No phone number, no email, no tracking. Built to keep working under censorship." />
+<meta name="twitter:image" content="https://myphantom.org/og.png" />
+
+<!-- Structured data: the product + the FAQ on this page -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "PHANTOM",
+      "applicationCategory": "CommunicationApplication",
+      "operatingSystem": "Android",
+      "description": "Free, end-to-end encrypted messenger for Android that keeps working where other apps are blocked. No phone number, no email, no tracking.",
+      "url": "https://myphantom.org/",
+      "downloadUrl": "https://myphantom.org/latest.apk",
+      "softwareVersion": "latest",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is it free?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, completely. No subscription, no ads." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need an invite or a code?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No, just download and start." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there an iPhone version?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Not yet, Android only for now." }
+        },
+        {
+          "@type": "Question",
+          "name": "What if I lose my phone?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Your identity lives in the keys on your device, so keep a backup from inside the app: Settings then Backup. Without a backup, a lost phone means a new identity." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why isn't it on Google Play?",
+          "acceptedAnswer": { "@type": "Answer", "text": "To stay reachable where app stores are restricted, PHANTOM is installed directly from this page." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+  :root{
+    --bg:#0F1010; --bg-2:#141515; --surface:#1C1D1D;
+    --accent:#B8CAC8; --accent-2:#7FB0AD; --accent-ink:#0E1817; --accent-dim:#536462;
+    --text:#ECEAE9; --muted:#9A9694; --border:rgba(236,234,233,.10); --border-hi:rgba(184,202,200,.34);
+    --glass:rgba(255,255,255,.045); --glass-2:rgba(255,255,255,.022);
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:24px; --s8:32px; --s12:48px; --s16:64px; --s24:96px;
+    --r-sm:10px; --r:14px; --r-lg:22px; --r-pill:999px; --maxw:780px;
+    --t-display:clamp(46px,10vw,88px); --t-hero:clamp(24px,4.8vw,38px); --t-h2:clamp(26px,4.4vw,34px); --t-h3:20px;
+    --t-body:17px; --t-sm:15px; --t-cap:13px;
+    --ease:cubic-bezier(.2,.7,.2,1);
+  }
+  *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--text); overflow-x:hidden; position:relative;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Noto Sans Arabic","Noto Sans SC",sans-serif;
+    font-size:var(--t-body); line-height:1.6; letter-spacing:.01em;
+  }
+  /* faint node-grid texture, fixed */
+  body::after{content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.5;
+    background-image:radial-gradient(circle, rgba(184,202,200,.04) 1px, transparent 1.4px); background-size:32px 32px;
+    mask-image:linear-gradient(#000, transparent 70%)}
+
+  /* ---- AURORA: soft sage/teal light, blurred, drifting (reduce-motion safe) ---- */
+  .aurora{position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none}
+  .aurora span{position:absolute; border-radius:50%; filter:blur(72px); opacity:.55; mix-blend-mode:screen}
+  .a1{width:62vw; height:42vw; top:-16vw; left:-12vw; background:radial-gradient(circle, rgba(184,202,200,.5), transparent 60%)}
+  .a2{width:56vw; height:46vw; top:-20vw; right:-14vw; background:radial-gradient(circle, rgba(127,176,173,.46), transparent 62%)}
+  .a3{width:54vw; height:54vw; top:2vw; left:28vw; background:radial-gradient(circle, rgba(83,100,98,.55), transparent 66%)}
+  .aurora::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, transparent 38%, var(--bg) 78%)}
+  @keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(2.5%,2%) scale(1.07)}100%{transform:translate(0,0) scale(1)}}
+  html.js .a1{animation:drift 20s ease-in-out infinite}
+  html.js .a2{animation:drift 24s ease-in-out infinite -8s}
+  html.js .a3{animation:drift 28s ease-in-out infinite -15s}
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:var(--s4) var(--s5) var(--s24); position:relative; z-index:1}
+
+  /* ---- top bar + language pills ---- */
+  .top{display:flex; align-items:center; justify-content:space-between; padding:var(--s5) 0 var(--s8)}
+  .brandmark{display:flex; align-items:center; gap:var(--s2); font-weight:600; letter-spacing:.2em; font-size:var(--t-cap); color:var(--muted)}
+  .brandmark svg{width:18px; height:18px; color:var(--accent)}
+  .langs{display:inline-flex; gap:var(--s1); background:var(--glass); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border:1px solid var(--border); border-radius:var(--r-pill); padding:var(--s1)}
+  .langs button{border:0; background:transparent; color:var(--muted); font:inherit; font-size:var(--t-cap); font-weight:700; letter-spacing:.04em; padding:var(--s2) var(--s4); border-radius:var(--r-pill); cursor:pointer; transition:background .18s var(--ease), color .18s var(--ease)}
+  .langs button.on{background:var(--accent); color:var(--accent-ink)}
+  .langs button:hover:not(.on){color:var(--text)}
+  .langs button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+  /* ---- hero ---- */
+  .hero{text-align:center; padding:var(--s8) 0 var(--s16)}
+  .badge{display:inline-flex; align-items:center; gap:var(--s2); background:var(--glass); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); border:1px solid var(--border-hi); color:var(--accent); font-size:var(--t-cap); font-weight:600; letter-spacing:.03em; padding:var(--s2) var(--s4); border-radius:var(--r-pill); margin-bottom:var(--s6)}
+  .badge svg{width:14px; height:14px}
+  .shieldwrap{position:relative; width:88px; height:88px; margin:0 auto var(--s5)}
+  .shieldwrap::before{content:""; position:absolute; inset:-45%; border-radius:50%; background:radial-gradient(circle, rgba(184,202,200,.32), transparent 66%); filter:blur(8px)}
+  .shield{position:relative; width:88px; height:88px; color:var(--accent)}
+  h1{font-size:var(--t-display); line-height:1; margin:0 0 var(--s5); font-weight:600; letter-spacing:.1em;
+     background:linear-gradient(180deg,#FFFFFF, #C7D4D2); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .tagline{font-size:var(--t-hero); font-weight:300; line-height:1.28; margin:0 auto var(--s5); max-width:22ch; color:var(--text); letter-spacing:.005em}
+  .sub{color:var(--muted); margin:0 auto var(--s8); max-width:44ch}
+  .sub b{color:var(--accent); font-weight:600}
+
+  .cta{display:inline-flex; align-items:center; gap:var(--s3); color:var(--accent-ink); font-weight:700; font-size:var(--t-body); text-decoration:none; padding:var(--s4) var(--s8); border-radius:var(--r);
+    background:linear-gradient(180deg,#CFDDDB, var(--accent));
+    box-shadow:0 1px 0 rgba(255,255,255,.25) inset, 0 0 0 1px rgba(184,202,200,.28), 0 16px 44px -14px rgba(184,202,200,.55);
+    transition:transform .15s var(--ease), box-shadow .15s var(--ease), filter .15s var(--ease)}
+  .cta svg{width:20px; height:20px}
+  .cta:hover{transform:translateY(-2px); filter:brightness(1.03); box-shadow:0 1px 0 rgba(255,255,255,.3) inset, 0 0 0 1px rgba(184,202,200,.5), 0 22px 60px -14px rgba(184,202,200,.7)}
+  .cta:active{transform:translateY(0) scale(.985)}
+  .cta:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .meta{margin-top:var(--s4); font-size:var(--t-cap); color:var(--muted)}
+  .meta b{color:var(--text); font-weight:600}
+
+  /* ---- sections ---- */
+  section{margin-top:var(--s24)}
+  .h2{display:flex; align-items:center; gap:var(--s3); margin:0 0 var(--s8); justify-content:center}
+  .h2::before,.h2::after{content:""; height:1px; flex:1; max-width:48px; background:linear-gradient(90deg, transparent, var(--border-hi))}
+  .h2::after{background:linear-gradient(270deg, transparent, var(--border-hi))}
+  .h2 h2{font-size:var(--t-h2); line-height:1.2; margin:0; font-weight:600; letter-spacing:.01em; text-align:center}
+
+  /* ---- glass feature cards ---- */
+  .grid{display:grid; grid-template-columns:1fr; gap:var(--s4)}
+  @media(min-width:600px){ .grid{grid-template-columns:1fr 1fr; gap:var(--s5)} }
+  .card{position:relative; background:linear-gradient(180deg, var(--glass), var(--glass-2)); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    border:1px solid var(--border); border-radius:var(--r-lg); padding:var(--s6);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 24px 50px -34px rgba(0,0,0,.85);
+    transition:transform .18s var(--ease), border-color .18s var(--ease), box-shadow .18s var(--ease)}
+  .card:hover{transform:translateY(-3px); border-color:var(--border-hi);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.09), 0 30px 60px -30px rgba(0,0,0,.9), 0 0 44px -22px rgba(184,202,200,.35)}
+  .ic{display:grid; place-items:center; width:44px; height:44px; border-radius:var(--r-sm); margin-bottom:var(--s4);
+    background:rgba(184,202,200,.10); border:1px solid var(--border-hi); color:var(--accent)}
+  .ic svg{width:24px; height:24px}
+  .card h3{font-size:var(--t-h3); margin:0 0 var(--s2); font-weight:600; line-height:1.25}
+  .card p{margin:0; color:var(--muted); font-size:var(--t-sm)}
+
+  /* ---- steps ---- */
+  .panel{background:linear-gradient(180deg, var(--glass), var(--glass-2)); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+  .steps{list-style:none; counter-reset:step; margin:0; padding:0}
+  .steps li{counter-increment:step; position:relative; padding:var(--s5) var(--s6) var(--s5) calc(var(--s12) + var(--s5)); border-block-start:1px solid var(--border)}
+  .steps li:first-child{border-block-start:0}
+  .steps li::before{content:counter(step); position:absolute; inset-inline-start:var(--s5); top:var(--s5); width:32px; height:32px; border-radius:var(--r-pill); background:var(--accent); color:var(--accent-ink); display:grid; place-items:center; font-weight:700; font-size:var(--t-sm)}
+  .steps b{color:var(--text)} .steps .warn{color:var(--accent); font-weight:600}
+
+  /* ---- faq ---- */
+  details{border-block-start:1px solid var(--border)}
+  details:first-of-type{border-block-start:0}
+  summary{cursor:pointer; list-style:none; padding:var(--s5) var(--s6); font-size:var(--t-h3); font-weight:600; display:flex; align-items:center; justify-content:space-between; gap:var(--s4); transition:color .15s var(--ease)}
+  summary::-webkit-details-marker{display:none}
+  summary:hover{color:var(--accent)}
+  summary:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+  summary::after{content:""; flex:0 0 auto; width:9px; height:9px; border-inline-end:2px solid var(--muted); border-block-end:2px solid var(--muted); transform:rotate(45deg); transition:transform .2s var(--ease)}
+  details[open] summary{color:var(--text)}
+  details[open] summary::after{transform:rotate(225deg); border-color:var(--accent)}
+  details p{margin:0; padding:0 var(--s6) var(--s5); color:var(--muted)}
+
+  footer{margin-top:var(--s24); padding-top:var(--s8); border-top:1px solid var(--border); text-align:center; color:var(--muted); font-size:var(--t-cap)}
+  footer .dot{color:var(--accent-dim)}
+
+  .reveal{transition:opacity .6s var(--ease), transform .6s var(--ease)}
+  html.js .reveal{opacity:0; transform:translateY(14px)}
+  html.js .reveal.in{opacity:1; transform:none}
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important; scroll-behavior:auto !important}
+    html.js .reveal{opacity:1 !important; transform:none !important}
+  }
+  @media (max-width:480px){ .hero{padding-top:var(--s4)} section{margin-top:var(--s16)} footer{margin-top:var(--s16)} .card{padding:var(--s5)} }
+  [dir="rtl"] body{letter-spacing:0}
+</style>
+</head>
+<body>
+  <div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
+
+  <div class="wrap">
+    <header class="top">
+      <span class="brandmark">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        PHANTOM
+      </span>
+      <div class="langs" id="langs" role="group" aria-label="Language">
+        <button type="button" data-lang="ru">RU</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <span class="badge"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6"/></svg><span data-i18n="badge">End-to-end encrypted</span></span>
+        <div class="shieldwrap"><svg class="shield" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="m8.5 12 2.4 2.4L15.8 9.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h1>PHANTOM</h1>
+        <p class="tagline" data-i18n="hero_tagline">A private messenger that works where others are blocked.</p>
+        <p class="sub" data-i18n="hero_sub" data-i18n-html="1"><b>No phone number.</b> No email. No tracking.</p>
+        <a class="cta" href="https://github.com/bali2023andrei-hue/app/releases/latest/download/app.apk" rel="nofollow">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M5 19h14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="hero_cta">Download for Android</span>
+        </a>
+        <p class="meta" data-i18n="hero_meta" data-i18n-html="1">Free · Android · latest version <b id="ver">…</b></p>
+      </section>
+
+      <section class="reveal">
+        <div class="h2"><h2 data-i18n="protect_title">How it protects you</h2></div>
+        <div class="grid">
+          <article class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6"/></svg></span><h3 data-i18n="f1_t">End-to-end encryption</h3><p data-i18n="f1_b">Only you and the person you’re talking to can read your messages. The server only ever sees scrambled data.</p></article>
+          <article class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><rect x="7" y="3" width="10" height="18" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M4 4l16 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><h3 data-i18n="f2_t">No phone number, no email</h3><p data-i18n="f2_b">Your account is a nickname and the keys on your device. Nothing links it to your real identity.</p></article>
+          <article class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 5 5.5V11c0 4 3 7 7 8.5 4-1.5 7-4.5 7-8.5V5.5L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12h6m-2.2-2.2L15 12l-2.2 2.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3 data-i18n="f3_t">Built to beat censorship</h3><p data-i18n="f3_b">When the network blocks normal apps, PHANTOM automatically finds a path through — disguising its traffic as ordinary web browsing.</p></article>
+          <article class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="3.6" stroke="currentColor" stroke-width="1.6"/><path d="m10.6 10.6 8.4 8.4m-2.6-2.6 2-2m-4.4-1.4 2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3 data-i18n="f4_t">Your keys never leave your phone</h3><p data-i18n="f4_b">Encryption keys are created and stay on your device. We could not read your messages even if we wanted to.</p></article>
+          <article class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="3" width="12" height="18" rx="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M10 18h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><h3 data-i18n="f5_t">Messages live only on your device</h3><p data-i18n="f5_b">They’re stored on your phone only; the server deletes them the moment they’re delivered.</p></article>
+          <article class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M5 4h3l1.8 4.5-2 1.2a11 11 0 0 0 4.5 4.5l1.2-2L18 16v3a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><h3 data-i18n="f6_t">Encrypted voice calls</h3><p data-i18n="f6_b">Calls are end-to-end encrypted and disguised as an ordinary secure web connection.</p></article>
+        </div>
+      </section>
+
+      <section class="reveal">
+        <div class="h2"><h2 data-i18n="install_title">Install in 4 steps</h2></div>
+        <ol class="steps panel">
+          <li data-i18n="s1" data-i18n-html="1">Tap <b>Download for Android</b> to get the app file (an <b>.apk</b>).</li>
+          <li data-i18n="s2">Open the downloaded file. Android may ask for permission to install from this source — allow it.</li>
+          <li data-i18n="s3" data-i18n-html="1">Tap <b>Install</b>, then <b>Open</b>.</li>
+          <li data-i18n="s4" data-i18n-html="1"><span class="warn">Important:</span> to update later, install the new file <b>over</b> the old app. Never uninstall — that would erase your account and chats.</li>
+        </ol>
+      </section>
+
+      <section class="reveal">
+        <div class="h2"><h2 data-i18n="faq_title">Questions</h2></div>
+        <div class="panel">
+          <details><summary data-i18n="q1">Is it free?</summary><p data-i18n="a1">Yes, completely. No subscription, no ads.</p></details>
+          <details><summary data-i18n="q2">Do I need an invite or a code?</summary><p data-i18n="a2">No — just download and start.</p></details>
+          <details><summary data-i18n="q3">Is there an iPhone version?</summary><p data-i18n="a3">Not yet — Android only for now.</p></details>
+          <details><summary data-i18n="q4">What if I lose my phone?</summary><p data-i18n="a4">Your identity lives in the keys on your device, so keep a backup from inside the app: Settings → Backup. Without a backup, a lost phone means a new identity.</p></details>
+          <details><summary data-i18n="q5">Why isn’t it on Google Play?</summary><p data-i18n="a5">To stay reachable where app stores are restricted, PHANTOM is installed directly from this page.</p></details>
+        </div>
+      </section>
+    </main>
+
+    <footer><span class="dot">●</span> <span data-i18n="footer">No analytics and no trackers on this page.</span></footer>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+  document.documentElement.classList.add("js");
+  var I18N = {
+    en: {
+      badge:"End-to-end encrypted",
+      hero_tagline:"A private messenger that works where others are blocked.",
+      hero_sub:"<b>No phone number.</b> No email. No tracking.",
+      hero_cta:"Download for Android",
+      hero_meta:"Free · Android · latest version <b id=\"ver\">…</b>",
+      protect_title:"How it protects you",
+      f1_t:"End-to-end encryption", f1_b:"Only you and the person you’re talking to can read your messages. The server only ever sees scrambled data.",
+      f2_t:"No phone number, no email", f2_b:"Your account is a nickname and the keys on your device. Nothing links it to your real identity.",
+      f3_t:"Built to beat censorship", f3_b:"When the network blocks normal apps, PHANTOM automatically finds a path through — disguising its traffic as ordinary web browsing.",
+      f4_t:"Your keys never leave your phone", f4_b:"Encryption keys are created and stay on your device. We could not read your messages even if we wanted to.",
+      f5_t:"Messages live only on your device", f5_b:"They’re stored on your phone only; the server deletes them the moment they’re delivered.",
+      f6_t:"Encrypted voice calls", f6_b:"Calls are end-to-end encrypted and disguised as an ordinary secure web connection.",
+      install_title:"Install in 4 steps",
+      s1:"Tap <b>Download for Android</b> to get the app file (an <b>.apk</b>).",
+      s2:"Open the downloaded file. Android may ask for permission to install from this source — allow it.",
+      s3:"Tap <b>Install</b>, then <b>Open</b>.",
+      s4:"<span class=\"warn\">Important:</span> to update later, install the new file <b>over</b> the old app. Never uninstall — that would erase your account and chats.",
+      faq_title:"Questions",
+      q1:"Is it free?", a1:"Yes, completely. No subscription, no ads.",
+      q2:"Do I need an invite or a code?", a2:"No — just download and start.",
+      q3:"Is there an iPhone version?", a3:"Not yet — Android only for now.",
+      q4:"What if I lose my phone?", a4:"Your identity lives in the keys on your device, so keep a backup from inside the app: Settings → Backup. Without a backup, a lost phone means a new identity.",
+      q5:"Why isn’t it on Google Play?", a5:"To stay reachable where app stores are restricted, PHANTOM is installed directly from this page.",
+      footer:"No analytics and no trackers on this page."
+    },
+    ru: {
+      badge:"Сквозное шифрование",
+      hero_tagline:"Личный мессенджер, который работает там, где остальные заблокированы.",
+      hero_sub:"<b>Без номера телефона.</b> Без почты. Без слежки.",
+      hero_cta:"Скачать для Android",
+      hero_meta:"Бесплатно · Android · последняя версия <b id=\"ver\">…</b>",
+      protect_title:"Как это вас защищает",
+      f1_t:"Сквозное шифрование", f1_b:"Прочитать сообщения можете только вы и ваш собеседник. Сервер видит лишь зашифрованные данные.",
+      f2_t:"Без номера и почты", f2_b:"Аккаунт — это никнейм и ключи на вашем устройстве. Ничто не связывает его с вашей личностью.",
+      f3_t:"Создан против цензуры", f3_b:"Когда сеть блокирует обычные приложения, PHANTOM сам находит рабочий путь и маскирует трафик под обычный просмотр сайтов.",
+      f4_t:"Ключи не покидают телефон", f4_b:"Ключи шифрования создаются и хранятся только на вашем устройстве. Мы не смогли бы прочитать ваши сообщения, даже если бы захотели.",
+      f5_t:"Сообщения — только у вас", f5_b:"Хранятся только на вашем телефоне; сервер удаляет их сразу после доставки.",
+      f6_t:"Зашифрованные звонки", f6_b:"Голосовые звонки шифруются сквозным образом и маскируются под обычное защищённое веб-соединение.",
+      install_title:"Установка в 4 шага",
+      s1:"Нажмите <b>Скачать для Android</b>, чтобы получить файл приложения (<b>.apk</b>).",
+      s2:"Откройте скачанный файл. Android может попросить разрешение на установку из этого источника — разрешите.",
+      s3:"Нажмите <b>Установить</b>, затем <b>Открыть</b>.",
+      s4:"<span class=\"warn\">Важно:</span> для обновления ставьте новый файл <b>поверх</b> старого приложения. Не удаляйте приложение — это сотрёт аккаунт и переписку.",
+      faq_title:"Вопросы",
+      q1:"Это бесплатно?", a1:"Да, полностью. Без подписки и рекламы.",
+      q2:"Нужен инвайт или код?", a2:"Нет — просто скачайте и начните.",
+      q3:"Есть версия для iPhone?", a3:"Пока нет — только Android.",
+      q4:"Что если я потеряю телефон?", a4:"Ваша личность — это ключи на устройстве, поэтому делайте резервную копию в приложении: Настройки → Резервная копия. Без копии потерянный телефон означает новую личность.",
+      q5:"Почему не в Google Play?", a5:"Чтобы оставаться доступным там, где магазины приложений ограничены, PHANTOM ставится напрямую с этой страницы.",
+      footer:"На этой странице нет аналитики и трекеров."
+    }
+  };
+  var RTL = {ar:1, fa:1}; var SUPPORTED = ["en","ru"];
+  function t(lang,key){ var d=I18N[lang]||I18N.en; return d[key]!=null?d[key]:(I18N.en[key]!=null?I18N.en[key]:key); }
+  function setVersion(){
+    var el=document.getElementById("ver"); if(!el) return;
+    fetch("/latest.txt",{cache:"no-store"}).then(function(r){return r.ok?r.text():null}).then(function(v){
+      if(v){ v=v.trim(); if(/^\d{2}\.\d{2}\.\d{2}-\d{2}:\d{2}$/.test(v)) el.textContent=v; }
+    }).catch(function(){});
+  }
+  function apply(lang){
+    if(SUPPORTED.indexOf(lang)<0) lang="en";
+    var html=document.documentElement; html.lang=lang; html.dir=RTL[lang]?"rtl":"ltr";
+    var nodes=document.querySelectorAll("[data-i18n]");
+    for(var i=0;i<nodes.length;i++){ var el=nodes[i], val=t(lang, el.getAttribute("data-i18n"));
+      if(el.getAttribute("data-i18n-html")==="1") el.innerHTML=val; else el.textContent=val; }
+    var btns=document.querySelectorAll("#langs button");
+    for(var j=0;j<btns.length;j++) btns[j].classList.toggle("on", btns[j].getAttribute("data-lang")===lang);
+    try{ localStorage.setItem("ph_lang", lang); }catch(e){}
+    setVersion();
+  }
+  function pick(){
+    var saved; try{ saved=localStorage.getItem("ph_lang"); }catch(e){}
+    if(saved && SUPPORTED.indexOf(saved)>=0) return saved;
+    var n=(navigator.language||"en").slice(0,2).toLowerCase();
+    return SUPPORTED.indexOf(n)>=0?n:"en";
+  }
+  document.getElementById("langs").addEventListener("click", function(e){
+    var b=e.target.closest("button[data-lang]"); if(b) apply(b.getAttribute("data-lang"));
+  });
+  apply(pick());
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){ if(en.isIntersecting){en.target.classList.add("in"); io.unobserve(en.target);} });},{rootMargin:"0px 0px -6% 0px"});
+    document.querySelectorAll(".reveal").forEach(function(s){io.observe(s);});
+  } else { document.querySelectorAll(".reveal").forEach(function(s){s.classList.add("in");}); }
+})();
+</script>
+</body>
+</html>

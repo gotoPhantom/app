@@ -1,0 +1,41 @@
+# PHANTOM
+
+> PHANTOM is a free, end-to-end encrypted messenger for Android, built to keep
+> working in places where ordinary messaging and VPN apps are blocked.
+
+## What it is
+
+PHANTOM is a private messenger. Messages and voice calls are end-to-end
+encrypted, so only the sender and the recipient can read or hear them. The
+server never sees plaintext. It is distributed as a direct Android download,
+not through an app store, so it stays reachable where app stores are restricted.
+
+## Who it is for
+
+People in censored or surveilled networks who need private communication that
+does not depend on a phone number, an email address, or an app store, and that
+keeps working when other apps are blocked.
+
+## Key features
+
+- End-to-end encrypted messages: only you and your contact can read them.
+- End-to-end encrypted voice calls, disguised as an ordinary secure web connection.
+- No phone number and no email: your account is a nickname plus the keys on your device.
+- No tracking and no analytics.
+- Encryption keys are created on your device and never leave it.
+- Messages are stored only on your device; the server deletes them once delivered.
+- Anti-censorship transport: when a network blocks normal apps, PHANTOM
+  automatically finds a path through and disguises its traffic as ordinary web browsing.
+- Android only for now; there is no iPhone version yet.
+
+## Cost
+
+Free. No subscription and no ads.
+
+## Download
+
+Android APK: https://myphantom.org/latest.apk
+Landing page: https://myphantom.org/
+
+To update later, install the new file over the existing app. Do not uninstall,
+as that erases the account and chat history.
