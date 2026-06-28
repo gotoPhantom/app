@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PHANTOM — приватный мессенджер, который работает там, где другие заблокированы</title>
+<meta name="description" content="PHANTOM — бесплатный мессенджер со сквозным шифрованием для Android. Без номера, без почты, без слежки. Работает там, где другие заблокированы.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#161717">
+<link rel="canonical" href="https://myphantom.org/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PHANTOM">
+<meta property="og:title" content="PHANTOM — приватный мессенджер, который работает там, где другие заблокированы">
+<meta property="og:description" content="Сквозное шифрование, без номера и почты, защита от блокировок. Бесплатно для Android.">
+<meta property="og:url" content="https://myphantom.org/">
+<meta property="og:image" content="https://myphantom.org/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+/* ── Fonts: exactly the app's (Roboto body + JetBrains Mono accents) ── */
+@font-face{font-family:'Roboto';font-weight:300;font-display:swap;src:url('fonts/roboto_light.ttf') format('truetype')}
+@font-face{font-family:'Roboto';font-weight:400;font-display:swap;src:url('fonts/roboto_regular.ttf') format('truetype')}
+@font-face{font-family:'Roboto';font-weight:500;font-display:swap;src:url('fonts/roboto_medium.ttf') format('truetype')}
+@font-face{font-family:'Roboto';font-weight:700;font-display:swap;src:url('fonts/roboto_bold.ttf') format('truetype')}
+@font-face{font-family:'Roboto';font-weight:900;font-display:swap;src:url('fonts/roboto_black.ttf') format('truetype')}
+@font-face{font-family:'JetBrains Mono';font-weight:400;font-display:swap;src:url('fonts/jetbrains_mono_regular.ttf') format('truetype')}
+@font-face{font-family:'JetBrains Mono';font-weight:500;font-display:swap;src:url('fonts/jetbrains_mono_medium.ttf') format('truetype')}
+@font-face{font-family:'JetBrains Mono';font-weight:600;font-display:swap;src:url('fonts/jetbrains_mono_semibold.ttf') format('truetype')}
+@font-face{font-family:'JetBrains Mono';font-weight:700;font-display:swap;src:url('fonts/jetbrains_mono_bold.ttf') format('truetype')}
+
+:root{
+  /* exact PHANTOM app tokens (PhantomDarkScheme + PhantomColors) */
+  --page:#161717; --page2:#0F1010; --lowest:#0C0D0D; --card:#1C1D1D; --bar:#202121; --high:#272828; --bright:#313333;
+  --text:#E4E2E1; --text2:#C2C8C6; --hint:#8C9291; --outline:#8C9291; --ov:#424847;
+  --border:rgba(228,226,225,.07); --border2:rgba(228,226,225,.14);
+  --accent:#B8CAC8; --accent-ink:#233332; --accent-dim:#536462;
+  --green:#27AE60; --red:#EF4444;
+  --mine-top:#18654A; --mine-bot:#0D3D2A; --theirs:#1C1D1D;
+  --glow:rgba(184,202,200,.13); --glowg:rgba(39,174,96,.16);
+  --head:'JetBrains Mono','SFMono-Regular',ui-monospace,monospace;
+  --body:'Roboto',-apple-system,'Segoe UI',sans-serif;
+  --r:14px; --r-lg:20px; --modal-scrim:rgba(0,0,0,.5);
+  /* PHANTOM HexBackground motif — sparse pointy-top hexagons (green+blue) + dots */
+  --hexbg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='132' height='132' viewBox='0 0 132 132' fill='none'%3E%3Cpath d='M28 10 L44 19 L44 37 L28 46 L12 37 L12 19Z' stroke='%2327AE60' stroke-opacity='0.07' stroke-width='2'/%3E%3Cpath d='M100 66 L111 72 L111 84 L100 90 L89 84 L89 72Z' stroke='%235BA4F5' stroke-opacity='0.06' stroke-width='1.5'/%3E%3Cpath d='M64 96 L77 103 L77 118 L64 125 L51 118 L51 103Z' stroke='%2327AE60' stroke-opacity='0.05' stroke-width='2'/%3E%3Ccircle cx='98' cy='28' r='2.5' fill='%235BA4F5' fill-opacity='0.10'/%3E%3Ccircle cx='30' cy='82' r='2.5' fill='%2327AE60' fill-opacity='0.09'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--page);color:var(--text);font-family:var(--body);font-weight:300;line-height:1.6;letter-spacing:.2px;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+h1,h2,h3,h4,.eyebrow,.btn,.mono,.kbd{font-family:var(--head);font-weight:700}
+.eyebrow{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--accent)}
+
+/* ── Cybercore: rising energy light beams — thin core + soft wide glow (hero only) ── */
+.scene{position:absolute;top:0;left:0;right:0;height:100vh;z-index:0;pointer-events:none;overflow:hidden;
+  background:radial-gradient(110% 60% at 50% -8%,rgba(39,174,96,.05),transparent 56%);
+  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 58%,transparent 94%);
+          mask-image:linear-gradient(180deg,#000 0,#000 58%,transparent 94%)}
+/* exact Cybercore light-beam (dhiluxui/cybercore-section-hero); colors adapted to PHANTOM */
+.beam{position:absolute;bottom:0;height:100%;opacity:0;filter:blur(1.5px);will-change:transform,opacity;
+  background:linear-gradient(to top,#fff 0%,rgba(39,174,96,.6) 15%,var(--accent) 50%,transparent 100%);
+  animation-name:rise,fade;animation-timing-function:ease-out,ease-out;animation-iteration-count:infinite,infinite}
+.beam.s{background:linear-gradient(to top,#fff 0%,rgba(127,176,173,.55) 10%,var(--accent) 40%,transparent 100%)}
+.beam.g{background:linear-gradient(to top,#fff 0%,rgba(39,174,96,.7) 12%,#3DDC84 45%,transparent 100%)}
+@keyframes rise{0%{opacity:0;transform:translateY(100%)}10%{opacity:1}100%{opacity:0;transform:translateY(-5%)}}
+@keyframes fade{0%,100%{opacity:0}5%,85%{opacity:.8}}
+
+/* ── Buttons ── */
+/* buttons in PHANTOM design-code: Shapes.medium (12dp), glass surface + 2dp border, scale on press */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--body);font-weight:500;font-size:14px;letter-spacing:.5px;text-transform:uppercase;border-radius:12px;padding:0 22px;height:48px;cursor:pointer;border:2px solid transparent;transition:transform .35s cubic-bezier(.22,1,.36,1),background .3s,border-color .3s,box-shadow .3s,filter .3s}
+.btn svg{width:18px;height:18px}
+.btn:active{transform:scale(.955)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 0 18px -2px var(--glow)}
+.btn-outline{background:rgba(28,29,29,.7);color:var(--accent);border-color:rgba(184,202,200,.38)}
+.btn-ghost{background:transparent;color:var(--text2)}
+@media(hover:hover){.btn-primary:hover{filter:brightness(1.07);box-shadow:0 0 26px -1px var(--glow)}.btn-outline:hover{border-color:var(--accent);background:rgba(184,202,200,.1)}.btn-ghost:hover{color:var(--accent)}}
+
+/* ── Header ── */
+header{position:sticky;top:0;z-index:50;background:rgba(22,23,23,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.navbar{display:flex;align-items:center;gap:16px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--head);font-size:17px;letter-spacing:3px;flex:none}
+.brand svg{width:24px;height:24px;color:var(--accent)}
+.nav-links{display:flex;gap:26px;margin-left:auto;font-family:var(--head);font-size:13px;letter-spacing:.5px;color:var(--text2)}
+.nav-links a:hover{color:var(--text)}
+.navbar .btn{height:44px;padding:0 20px;font-size:12px}
+.langs{display:inline-flex;gap:3px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:50px;padding:3px}
+.langs button{border:0;background:transparent;color:var(--text2);font-family:var(--head);font-size:11px;letter-spacing:.5px;padding:6px 10px;border-radius:50px;cursor:pointer;transition:.16s}
+.langs button.on{background:var(--accent);color:var(--accent-ink)}
+@media(max-width:880px){.nav-links{display:none}.navbar .btn.dl{margin-left:auto}}
+@media(max-width:520px){.langs{display:none}}
+
+/* ── Hero ── */
+.hero{display:grid;grid-template-columns:1fr 340px;gap:56px;align-items:center;padding:72px 0 56px}
+.hero h1{font-family:var(--body);font-weight:700;font-size:clamp(40px,6.4vw,66px);line-height:1.02;letter-spacing:-1.5px;margin:18px 0 22px;text-transform:uppercase}
+.hero h1 .dim{color:var(--text2)}
+.hero p.lead{font-size:18px;color:var(--text2);max-width:30em;margin-bottom:30px}
+.hero .cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.hero .meta{margin-top:16px;font-family:var(--head);font-size:12px;letter-spacing:.5px;color:var(--hint)}
+@media(max-width:880px){.hero{grid-template-columns:1fr;gap:36px;text-align:center;padding:48px 0}.hero .cta{justify-content:center}.hero p.lead{margin:0 auto 30px}.phone-stage{margin:0 auto}}
+
+/* ── Phone frame ── */
+.phone-stage{position:relative;width:330px;height:700px;justify-self:center;filter:drop-shadow(0 40px 90px rgba(0,0,0,.6))}
+.phone{position:absolute;inset:0;border-radius:42px;background:linear-gradient(150deg,#c6c3bb 0%,#7d7a73 28%,#4f4d48 52%,#88857d 76%,#c2bfb7 100%);padding:3.5px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+@media(max-width:430px){.phone-stage{width:290px;height:615px}.phone{transform:scale(.879);transform-origin:top center}}
+.phone .screen{position:relative;width:100%;height:100%;border-radius:38.5px;background:#000;overflow:hidden;border:1px solid #000}
+.phone .screen::before{content:"";position:absolute;inset:0;background:url('wallpaper.jpg') center/cover no-repeat;opacity:.22;z-index:0;pointer-events:none}
+.app,.clist-app,.pin{position:relative;z-index:1}
+.punch{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:#000;z-index:9;box-shadow:inset 0 0 0 1.5px #0b0f0e}
+.statusbar{display:flex;align-items:center;justify-content:space-between;padding:11px 22px 4px;font-family:var(--head);font-size:12px;color:var(--text)}
+.statusbar .ic{display:flex;gap:5px;opacity:.85}
+.statusbar .ic svg{width:15px;height:13px;color:var(--text)}
+.app{display:flex;flex-direction:column;height:100%}
+.pchat-hd{display:flex;align-items:center;gap:11px;padding:10px 14px;background:var(--bar);border-bottom:1px solid var(--border);flex:none}
+.pchat-hd .bk{color:var(--text2)}.pchat-hd .bk svg{width:18px;height:18px}
+.pchat-hd .av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9FC0BC,#5E807C);display:flex;align-items:center;justify-content:center;font-family:var(--head);font-size:14px;color:var(--accent-ink);flex:none}
+.pchat-hd .nm{font-family:var(--head);font-size:14px;color:var(--text)}
+.pchat-hd .pr{font-size:11px;color:var(--green)}
+.pchat-hd .sp{margin-left:auto;display:flex;gap:14px}
+.pchat-hd .sp svg{width:18px;height:18px;color:var(--text2)}
+.pmsgs{flex:1;padding:14px 12px;display:flex;flex-direction:column;gap:8px;overflow:hidden;background:transparent}
+.bub{max-width:80%;padding:8px 11px 6px;border-radius:14px;font-size:13.5px;line-height:1.4}
+.bub .tm{font-family:var(--head);font-size:9px;color:var(--hint);margin-left:8px;float:right;margin-top:4px}
+.bub.them{align-self:flex-start;background:var(--theirs);border-bottom-left-radius:5px}
+.bub.me{align-self:flex-end;background:linear-gradient(160deg,var(--mine-top),var(--mine-bot));border-bottom-right-radius:5px;color:#EAF4EF}
+.bub.me .tm{color:rgba(200,230,215,.75)}
+.bub .tick{color:#7FE3B0;font-size:10px}
+.pcomposer{display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--bar);border-top:1px solid var(--border);flex:none}
+.pcomposer .field{flex:1;display:flex;align-items:center;gap:8px;background:var(--card);border-radius:50px;padding:9px 14px;font-size:12px;color:var(--hint)}
+.pcomposer .field svg{width:15px;height:15px;color:var(--hint)}
+.pcomposer .send{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
+.pcomposer .send svg{width:17px;height:17px;color:var(--accent-ink)}
+
+/* ── Sections ── */
+section{padding:54px 0;position:relative;z-index:2}
+.sec-head{text-align:center;max-width:660px;margin:0 auto 36px}
+.sec-head h2{font-family:var(--head);font-weight:700;font-size:clamp(21px,2.9vw,31px);letter-spacing:1px;text-transform:uppercase;margin:12px 0 10px}
+.sec-head p{color:var(--text2);font-size:16px}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:30px 0}
+.stat{text-align:center}
+.stat .n{font-family:var(--head);font-size:clamp(28px,4vw,42px);color:var(--text)}
+.stat .l{font-size:13px;color:var(--text2);margin-top:4px}
+@media(max-width:620px){.stats{grid-template-columns:1fr 1fr;gap:26px}}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid.g2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:900px){.grid,.grid.g2{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.grid,.grid.g2{grid-template-columns:1fr}}
+/* clickable feature card */
+.card{position:relative;text-align:left;width:100%;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;cursor:pointer;transition:transform .5s cubic-bezier(.22,1,.36,1),border-color .35s,box-shadow .35s;color:inherit;font:inherit}
+@media(hover:hover){.card:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:0 24px 50px -30px rgba(0,0,0,.8),0 0 40px -26px var(--glow)}}
+.card .ic{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:15px;background:var(--glow);border:1px solid rgba(184,202,200,.22);color:var(--accent)}
+.card .ic svg{width:23px;height:23px}
+.card .tag{font-family:var(--head);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.card h3{font-family:var(--body);font-weight:700;font-size:18px;margin-bottom:7px;line-height:1.25}
+.card p{color:var(--text2);font-size:14.5px}
+.card .more{margin-top:13px;font-family:var(--head);font-size:11px;letter-spacing:.5px;color:var(--accent);display:inline-flex;align-items:center;gap:5px}
+.card .more svg{width:13px;height:13px}
+svg.i{stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* crypto */
+.crypto{max-width:820px;margin:0 auto;text-align:center}
+.crypto p.l{color:var(--text2);font-size:17px;max-width:46em;margin:14px auto 0}
+.terms{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:26px}
+.term{font-family:var(--head);font-size:13px;letter-spacing:.4px;color:var(--accent);border:1px solid rgba(184,202,200,.3);border-radius:50px;padding:9px 16px;background:rgba(184,202,200,.05);cursor:pointer;transition:.18s;display:inline-flex;align-items:center;gap:7px}
+.term:hover{background:rgba(184,202,200,.13);border-color:var(--accent)}
+.term .plus{color:var(--accent-dim)}
+.crypto-feats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:30px;text-align:left}
+@media(max-width:620px){.crypto-feats{grid-template-columns:1fr}}
+.cf{display:flex;gap:13px;align-items:flex-start;text-align:left;width:100%;background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.008));border:1px solid var(--border);border-radius:16px;padding:18px;cursor:pointer;color:inherit;font:inherit;transition:transform .5s cubic-bezier(.22,1,.36,1),border-color .35s,box-shadow .35s}
+@media(hover:hover){.cf:hover{transform:translateY(-3px);border-color:var(--border2);box-shadow:0 18px 40px -28px rgba(0,0,0,.8)}}
+.cf .ci{width:38px;height:38px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;background:var(--glowg);border:1px solid rgba(39,174,96,.25);color:var(--green)}
+.cf .ci svg{width:19px;height:19px}
+.cf h3{font-family:var(--body);font-weight:700;font-size:15px;margin-bottom:4px}
+.cf p{font-size:13.5px;color:var(--text2)}
+.cf .more{margin-top:10px;font-family:var(--head);font-size:11px;letter-spacing:.5px;color:var(--green);display:inline-flex;align-items:center;gap:5px}
+.cf .more svg{width:13px;height:13px}
+
+/* app showcase */
+.showcase{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;align-items:start}
+@media(max-width:900px){.showcase{grid-template-columns:1fr;gap:48px;max-width:320px;margin:0 auto}}
+.show-item{text-align:center}
+.show-item .phone-stage{margin:0 auto 18px;width:268px;height:568px}
+.show-item .phone .screen{border-radius:38.5px}
+.show-item h3{font-family:var(--body);font-weight:700;font-size:17px;margin-bottom:5px}
+.show-item p{color:var(--text2);font-size:14px;max-width:24em;margin:0 auto}
+
+/* PIN — exact app spec (Numpad 72x56 r12, digits=outlineVariant muted, dots green glow, shield 90 r22) */
+.pin{display:flex;flex-direction:column;height:100%;align-items:center;padding:30px 20px 22px;background:radial-gradient(70% 40% at 50% 18%,rgba(39,174,96,.10),transparent)}
+.clist-app{background:transparent}
+.pin .badge{font-family:var(--head);font-size:9px;letter-spacing:1.5px;color:var(--green);border:1px solid rgba(39,174,96,.35);border-radius:50px;padding:4px 10px;background:rgba(39,174,96,.08)}
+.pin .shieldbox{width:80px;height:80px;border-radius:22px;background:rgba(184,202,200,.07);display:flex;align-items:center;justify-content:center;margin:auto 0 10px;box-shadow:0 0 30px -6px var(--glow);transition:box-shadow .25s ease}
+.pin .shieldbox svg{width:36px;height:36px;color:var(--accent);transition:color .25s ease}
+.pin .shieldbox.err{box-shadow:0 0 30px -4px rgba(239,68,68,.7)}
+.pin .shieldbox.err svg{color:var(--red)}
+.pin .shieldbox.ok{box-shadow:0 0 34px -3px rgba(39,174,96,.8)}
+.pin .shieldbox.ok svg{color:var(--green)}
+.pin .word{font-family:var(--head);font-size:20px;letter-spacing:3px;color:var(--text)}
+.pin .sub{font-size:12px;color:var(--text2);margin:7px 0 16px}
+.pin .dots{display:flex;gap:16px;margin-bottom:auto}
+.pin .dots i{width:12px;height:12px;border-radius:50%;border:2px solid var(--outline);box-sizing:border-box}
+.pin .dots i.f{width:16px;height:16px;background:var(--green);border-color:var(--green);box-shadow:0 0 12px 1px rgba(39,174,96,.6)}
+.pin .dots.err{animation:pinShake .5s ease}
+.pin .dots.err i{background:var(--red);border-color:var(--red);box-shadow:0 0 12px 1px rgba(239,68,68,.6)}
+@keyframes pinShake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(3px)}30%,50%,70%{transform:translateX(-6px)}40%,60%{transform:translateX(6px)}}
+.numpad{display:grid;grid-template-columns:repeat(3,64px);gap:12px;justify-content:center;margin-top:8px}
+.numpad button{width:64px;height:50px;border-radius:12px;border:2px solid var(--ov);background:rgba(28,29,29,.7);color:var(--ov);font-family:var(--head);font-size:21px;cursor:pointer;transition:.12s;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center}
+.numpad button:active{border-color:var(--accent);color:var(--accent);transform:scale(.95)}
+.numpad button svg{width:26px;height:26px}
+/* wallet easter egg — revealed by typing PIN 0611 on the showcase lock screen */
+.weg{position:absolute;inset:0;z-index:6;background:#0b0d0d;display:flex;flex-direction:column;gap:11px;padding:52px 16px 16px;opacity:0;visibility:hidden;transform:scale(1.05);transition:opacity .45s ease,transform .55s cubic-bezier(.32,.72,0,1),visibility 0s .5s}
+.weg.show{opacity:1;visibility:visible;transform:scale(1);transition:opacity .45s ease,transform .55s cubic-bezier(.32,.72,0,1),visibility 0s 0s}
+.weg .weg-h{font-family:var(--head);font-size:15px;letter-spacing:1px;color:var(--text);text-align:center}
+.weg-card{border-radius:18px;padding:17px;background:linear-gradient(150deg,rgba(39,174,96,.18),rgba(28,29,29,.55));border:1px solid var(--border)}
+.weg-l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1.5px}
+.weg-amt{font-family:var(--head);font-size:29px;color:var(--text);margin-top:4px;line-height:1}
+.weg-amt .dec{color:var(--text2)}.weg-amt .cur{font-size:13px;color:var(--green);letter-spacing:1px}
+.weg-addr{margin-top:10px;font-family:var(--head);font-size:11px;color:var(--text2);letter-spacing:.5px}
+.weg-row{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:13px;background:rgba(28,29,29,.5);border:1px solid var(--border)}
+.weg-ic{width:32px;height:32px;border-radius:50%;background:#26A17B;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--head);font-size:15px;flex:none}
+.weg-ic.trx{background:#EF0027}
+.weg-nm{flex:1;font-family:var(--head);font-size:13px;color:var(--text);display:flex;flex-direction:column;line-height:1.25}
+.weg-nm small{font-family:var(--body);font-size:9.5px;color:var(--text2);letter-spacing:.5px}
+.weg-v{font-family:var(--head);font-size:13px;color:var(--text)}
+.weg-acts{display:flex;gap:9px;margin-top:auto}
+.weg-b{flex:1;height:42px;border-radius:12px;border:none;background:var(--accent);color:var(--accent-ink);font-family:var(--head);font-size:12px;letter-spacing:.5px;cursor:pointer}
+.weg-b.g{background:rgba(28,29,29,.7);color:var(--accent);border:1px solid rgba(184,202,200,.38)}
+
+/* chat list */
+.clist-app{display:flex;flex-direction:column;height:100%;text-align:left}
+.clist-hd{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--bar);border-bottom:1px solid var(--border)}
+.clist-hd .t{font-family:var(--head);font-size:16px;letter-spacing:1.5px;color:var(--text)}
+.clist-hd svg{width:18px;height:18px;color:var(--accent)}
+.crow{display:flex;align-items:center;gap:12px;padding:9px 14px;border-bottom:1px solid rgba(228,226,225,.1)}
+.crow .av{width:46px;height:46px;border-radius:50%;flex:none;background-size:cover;background-position:center;background-repeat:no-repeat}
+.crow .av.a{background-image:url('avatars/a1.jpg')}
+.crow .av.b{background-image:url('avatars/a2.jpg')}
+.crow .av.c{background-image:url('avatars/a3.jpg')}
+.crow .av.d{background-image:url('avatars/a4.jpg')}
+.crow .mid{flex:1;min-width:0}
+.crow .nm{font-family:var(--head);font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow .pv{font-size:12.5px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow .rt{text-align:right;flex:none}
+.crow .tm{font-family:var(--head);font-size:10px;color:var(--hint)}
+.crow .bdg{display:inline-block;margin-top:5px;min-width:18px;height:18px;border-radius:9px;background:var(--green);color:#06241A;font-family:var(--head);font-size:10px;line-height:18px;padding:0 5px}
+
+/* bypass — professional animated diagram */
+.bypass{max-width:780px;margin:0 auto}
+.bypass-vis{position:relative;height:240px;border-radius:var(--r-lg);background:radial-gradient(120% 120% at 50% 0%,rgba(39,174,96,.06),transparent 60%),var(--card);border:1px solid var(--border);overflow:hidden}
+.bypass-vis svg{position:absolute;inset:0;width:100%;height:100%}
+.bp-track{fill:none;stroke:var(--ov);stroke-width:1.5;stroke-dasharray:4 8;opacity:.45}
+.bp-flow{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:46 582;filter:drop-shadow(0 0 5px rgba(39,174,96,.55))}
+.bp-flow.f1{stroke:var(--green);animation:flow 3.2s linear infinite}
+.bp-flow.f2{stroke:var(--green);filter:drop-shadow(0 0 5px rgba(39,174,96,.55));animation:flow 3.9s linear infinite .7s}
+.bp-flow.f3{stroke:var(--green);animation:flow 2.8s linear infinite 1.3s}
+.bp-flow.f4{stroke:var(--green);filter:drop-shadow(0 0 5px rgba(39,174,96,.55));animation:flow 3.5s linear infinite 2.1s}
+@keyframes flow{from{stroke-dashoffset:628}to{stroke-dashoffset:0}}
+.bp-n{position:absolute;transform:translate(-50%,-50%);z-index:3}
+.bp-n .dot{position:relative;width:64px;height:64px;border-radius:19px;display:grid;place-items:center;line-height:0;background:linear-gradient(160deg,var(--high),var(--card));border:1.5px solid var(--border2);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 10px 24px -14px #000}
+.bp-n .dot svg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;display:block}
+.bp-n.you .dot,.bp-n.relay .dot{border-color:rgba(39,174,96,.55);color:var(--green);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 0 26px -6px var(--glowg)}
+.bp-n.block .dot{border-color:var(--red);color:var(--red);background:linear-gradient(160deg,rgba(239,68,68,.14),var(--card));box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 0 26px -6px rgba(239,68,68,.5)}
+.bp-n .lb{position:absolute;top:calc(100% + 9px);left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--head);font-size:10px;letter-spacing:1px;color:var(--text2);text-transform:uppercase}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}
+@media(max-width:760px){.steps{grid-template-columns:1fr}}
+.step{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--border);border-radius:16px;padding:22px}
+.step .n{font-family:var(--head);font-size:13px;color:var(--green);letter-spacing:1px}
+.step h3{font-family:var(--body);font-weight:700;font-size:16px;margin:8px 0 6px}
+.step p{color:var(--text2);font-size:14px}
+
+/* start */
+.start{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:st}
+@media(max-width:900px){.start{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.start{grid-template-columns:1fr}}
+.scard{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--border);border-radius:16px;padding:22px 20px;counter-increment:st}
+.scard::before{content:counter(st,decimal-leading-zero);position:absolute;top:16px;right:18px;font-family:var(--head);font-size:24px;color:rgba(184,202,200,.18)}
+.scard h4{font-family:var(--body);font-weight:700;font-size:16px;margin-bottom:6px}
+.scard p{color:var(--text2);font-size:13.5px}
+.qr-note{margin-top:18px;display:flex;gap:14px;align-items:center;background:var(--glow);border:1px solid rgba(184,202,200,.2);border-radius:16px;padding:16px 18px}
+.qr-note svg{width:34px;height:34px;color:var(--accent);flex:none}
+.qr-note h4{font-family:var(--body);font-weight:700;font-size:15px;margin-bottom:3px}
+.qr-note p{color:var(--text2);font-size:13.5px}
+.warn{margin-top:14px;font-size:13px;color:var(--text2);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px}
+.warn b{color:var(--red);font-family:var(--head);font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-right:8px}
+.warn .ok{color:var(--green);font-family:var(--head);font-weight:700;font-size:12px;letter-spacing:.5px}
+
+/* faq */
+.faq{max-width:760px;margin:0 auto}
+.faq details{border-bottom:1px solid var(--border)}
+.faq summary{cursor:pointer;list-style:none;padding:18px 4px;font-family:var(--body);font-weight:700;font-size:16px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--text2);border-bottom:2px solid var(--text2);transform:rotate(45deg);transition:.2s;flex:none}
+.faq details[open] summary::after{transform:rotate(225deg);border-color:var(--accent)}
+.faq summary:hover{color:var(--accent)}
+.faq p{padding:0 4px 18px;color:var(--text2);font-size:15px}
+
+/* download */
+section.download{padding-top:74px;padding-bottom:84px}
+.download .box{text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));border:1px solid var(--border2);border-radius:26px;padding:54px 32px;max-width:620px;margin:0 auto;position:relative;overflow:hidden}
+.download .box::before{content:"";position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:120%;height:80%;background:radial-gradient(circle,var(--glow),transparent 65%)}
+.download h2{font-family:var(--body);font-weight:700;font-size:clamp(28px,4vw,40px);letter-spacing:-.5px;margin-bottom:12px;position:relative}
+.download p{color:var(--text2);margin-bottom:26px;position:relative}
+.download .apk-note{position:relative;margin-top:20px;display:inline-flex;align-items:center;gap:10px;font-size:13px;color:var(--text2);background:rgba(39,174,96,.08);border:1px solid rgba(39,174,96,.25);border-radius:50px;padding:10px 18px;max-width:480px;text-align:left;line-height:1.45}
+.download .apk-note svg{width:20px;height:20px;color:var(--green);flex:none;stroke:none}
+.download .apk-note b{color:var(--text);font-family:var(--head);font-size:12px}
+
+footer{border-top:1px solid var(--border);padding:32px 0;position:relative;z-index:2}
+footer .wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:var(--hint);font-size:13px}
+footer .brand{font-size:15px;color:var(--text2)}
+footer .ver{margin-left:auto;font-family:var(--head);font-size:12px}
+
+/* modal (PhantomModal: scrim .5 + backdrop blur 12 + 4dp border) */
+.modal-root{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;visibility:hidden;transition:visibility 0s .55s}
+.modal-root.open{visibility:visible;transition:visibility 0s 0s}
+.modal-scrim{position:absolute;inset:0;background:var(--modal-scrim);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.modal-scrim{transition:opacity .4s ease;opacity:0}
+.modal-root.open .modal-scrim{opacity:1}
+.modal-card{position:relative;z-index:2;max-width:460px;width:100%;background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:28px;max-height:84vh;overflow:auto;transform:translateY(22px) scale(.93);opacity:0;transition:transform .55s cubic-bezier(.32,.72,0,1),opacity .4s ease}
+.modal-root.open .modal-card{transform:none;opacity:1}
+.modal-card .mi{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:var(--glow);border:1px solid rgba(184,202,200,.22);color:var(--accent);margin-bottom:16px}
+.modal-card .mi svg{width:25px;height:25px}
+.modal-card h3{font-family:var(--body);font-weight:700;font-size:21px;margin-bottom:10px}
+.modal-card .mono-ttl{font-family:var(--head);font-size:13px;letter-spacing:1px;color:var(--accent);margin-bottom:8px}
+.modal-card p{color:var(--text2);font-size:15px;line-height:1.65}
+.modal-card .close{margin-top:22px;width:100%;border:1.5px solid var(--border2);background:transparent;color:var(--text);font-family:var(--head);font-size:13px;letter-spacing:1px;text-transform:uppercase;border-radius:50px;padding:13px;cursor:pointer;transition:.18s}
+.modal-card .close:hover{border-color:var(--accent);color:var(--accent)}
+.support-card{text-align:center}
+.support-card .mi{margin:0 auto 16px;color:var(--green);background:var(--glowg);border-color:rgba(39,174,96,.25)}
+.support-card p{text-align:left;margin-bottom:18px}
+.support-card .qr{width:188px;height:188px;border-radius:14px;background:#fff;padding:10px;margin:0 auto 14px;display:block}
+.support-card .mono-ttl{text-align:center;color:var(--green)}
+.support-card .addr{font-family:var(--head);font-size:12.5px;word-break:break-all;background:var(--page2);border:1px solid var(--border2);border-radius:12px;padding:13px;color:var(--text);margin:8px 0 12px;line-height:1.5}
+.support-card .copy{width:100%;border:1.5px solid rgba(39,174,96,.4);background:var(--glowg);color:var(--green);font-family:var(--head);font-size:13px;letter-spacing:.6px;text-transform:uppercase;border-radius:50px;padding:13px;cursor:pointer;transition:.18s}
+.support-card .copy:hover{background:rgba(39,174,96,.18)}
+.support-card .copy.done{color:var(--green);border-color:var(--green)}
+.btn-support{background:rgba(28,29,29,.7);color:var(--green);border-color:rgba(39,174,96,.45)}
+@media(hover:hover){.btn-support:hover{background:var(--glowg);border-color:var(--green)}}
+footer .support-link{color:var(--green);cursor:pointer;font-family:var(--head);font-size:12px;letter-spacing:.5px}
+footer .support-link:hover{text-decoration:underline}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.32,.72,0,1),transform .8s cubic-bezier(.32,.72,0,1)}
+.reveal.in{opacity:1;transform:none}
+.grid .reveal:nth-child(2),.start .reveal:nth-child(2),.crypto-feats .reveal:nth-child(2){transition-delay:.05s}
+.grid .reveal:nth-child(3),.start .reveal:nth-child(3){transition-delay:.1s}
+.grid .reveal:nth-child(4),.start .reveal:nth-child(4){transition-delay:.15s}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}.reveal{opacity:1;transform:none;transition:none}.shaft{display:none}}
+</style>
+</head>
+<body>
+
+<div class="scene" aria-hidden="true" id="scene"></div>
+
+<header>
+  <div class="wrap navbar">
+    <a class="brand" href="/"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>PHANTOM</a>
+    <nav class="nav-links"><a href="#why">Почему</a><a href="#protect">Защита</a><a href="#app">Приложение</a><a href="#start">Как начать</a></nav>
+    <div class="langs"><button class="on" data-lang="ru">RU</button><button data-lang="en">EN</button></div>
+    <a class="btn btn-outline dl" href="https://github.com/gotoPhantom/app/releases/latest/download/app.apk" rel="nofollow">Скачать</a>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="wrap hero">
+    <div>
+      <span class="eyebrow">Сквозное шифрование</span>
+      <h1>Приватно.<br><span class="dim">Без блокировок.</span></h1>
+      <p class="lead">Мессенджер, который работает там, где другие заблокированы. Без номера, без почты, без слежки.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/gotoPhantom/app/releases/latest/download/app.apk" rel="nofollow"><svg viewBox="0 0 24 24" fill="currentColor" style="stroke:none"><path d="M16.5 6.1l1.2-2.1a.42.42 0 0 0-.73-.42l-1.23 2.13a8.3 8.3 0 0 0-7.48 0L7.03 3.57a.42.42 0 0 0-.73.42L7.5 6.1A7.6 7.6 0 0 0 3.9 12.4h16.2A7.6 7.6 0 0 0 16.5 6.1ZM9.1 10.1a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm5.8 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>Скачать для Android</a>
+        <a class="btn btn-ghost" href="#start">Как это работает →</a>
+      </div>
+      <div class="meta">Бесплатно · Android · версия <span id="ver">…</span></div>
+    </div>
+    <div class="phone-stage">
+      <div class="phone"><div class="screen"><div class="punch"></div>
+        <div class="app">
+          <div class="statusbar"><span>9:41</span><span class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 22h2v-8H2zM7 22h2V8H7zM12 22h2V4h-2zM17 22h2v-6h-2z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3"/></svg></span></div>
+          <div class="pchat-hd"><span class="bk"><svg viewBox="0 0 24 24" class="i"><path d="M15 18l-6-6 6-6"/></svg></span><div class="av">A</div><div><div class="nm">Алекс</div><div class="pr">в сети</div></div><div class="sp"><svg viewBox="0 0 24 24" class="i"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg><svg viewBox="0 0 24 24" class="i"><path d="M5 4h3l2 5-2 1a11 11 0 0 0 5 5l1-2 5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg></div></div>
+          <div class="pmsgs">
+            <div class="bub them">Это точно безопасно?<span class="tm">14:31</span></div>
+            <div class="bub me">Всегда — сквозное шифрование.<span class="tm">14:31 <span class="tick">✓✓</span></span></div>
+            <div class="bub them">И никто не прочитает?<span class="tm">14:32</span></div>
+            <div class="bub me">Только мы вдвоём. Ключи — на телефоне.<span class="tm">14:32 <span class="tick">✓✓</span></span></div>
+          </div>
+          <div class="pcomposer"><div class="field"><svg viewBox="0 0 24 24" class="i"><path d="m21 15-5-5L5 21"/><circle cx="9" cy="9" r="2"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg>Сообщение…</div><div class="send"><svg viewBox="0 0 24 24" class="i"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z"/></svg></div></div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- NUMBERS -->
+  <section class="wrap"><div class="stats reveal">
+    <div class="stat"><div class="n">0</div><div class="l">Номеров телефона</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">Трекеров и рекламы</div></div>
+    <div class="stat"><div class="n">100%</div><div class="l">Ключей на устройстве</div></div>
+    <div class="stat"><div class="n">∞</div><div class="l">Бесплатно, навсегда</div></div>
+  </div></section>
+
+  <!-- WHY -->
+  <section class="wrap" id="why">
+    <div class="sec-head"><span class="eyebrow">Почему PHANTOM</span><h2>Круг, которым управляете только вы</h2><p>Нажмите на любую карточку — расскажем подробнее.</p></div>
+    <div class="grid g2" id="why-grid"></div>
+  </section>
+
+  <!-- PROTECT -->
+  <section class="wrap" id="protect">
+    <div class="sec-head"><span class="eyebrow">Защита</span><h2>Как это вас защищает</h2></div>
+    <div class="grid" id="protect-grid"></div>
+  </section>
+
+  <!-- CRYPTO -->
+  <section class="wrap">
+    <div class="crypto">
+      <span class="eyebrow">Настоящая криптография</span>
+      <h2 style="font-family:var(--body);font-weight:700;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.5px;margin:12px 0 0">Золотой стандарт шифрования</h2>
+      <p class="l">PHANTOM использует протокол Signal и AES-256 — то же открытое, независимо проверенное шифрование, что защищает миллиарды переписок. Каждое сообщение запечатано собственным одноразовым ключом. Нажмите на термин, чтобы узнать, что это.</p>
+      <div class="terms" id="terms"></div>
+      <div class="crypto-feats" id="crypto-feats"></div>
+    </div>
+  </section>
+
+  <!-- APP SHOWCASE -->
+  <section class="wrap" id="app">
+    <div class="sec-head"><span class="eyebrow">Настоящее приложение</span><h2>Это и есть приложение</h2><p>Не концепт — реальный интерфейс PHANTOM, пиксель в пиксель.</p></div>
+    <div class="showcase">
+      <!-- PIN -->
+      <div class="show-item reveal">
+        <div class="phone-stage"><div class="phone"><div class="screen"><div class="punch"></div>
+          <div class="pin">
+            <span class="badge">PHANTOM ТУННЕЛЬ</span>
+            <div class="shieldbox"><svg viewBox="0 0 24 24" class="i"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/><path d="m8.5 12 2.4 2.4L15.8 9.6"/></svg></div>
+            <div class="word">PHANTOM</div>
+            <div class="sub">Введите PIN</div>
+            <div class="dots"><i></i><i></i><i></i><i></i></div>
+            <div class="numpad">
+              <button>1</button><button>2</button><button>3</button>
+              <button>4</button><button>5</button><button>6</button>
+              <button>7</button><button>8</button><button>9</button>
+              <button><svg viewBox="0 0 24 24" class="i"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+              <button>0</button>
+              <button><svg viewBox="0 0 24 24" class="i"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2ZM18 9l-6 6M12 9l6 6"/></svg></button>
+            </div>
+          </div>
+          <div class="weg" id="walletEgg">
+            <div class="weg-h">Кошелёк</div>
+            <div class="weg-card">
+              <div class="weg-l">Баланс</div>
+              <div class="weg-amt">1 240<span class="dec">.50</span> <span class="cur">USDT</span></div>
+              <div class="weg-addr">TDJvyxiv7j…SvzPDx2</div>
+            </div>
+            <div class="weg-row"><div class="weg-ic">₮</div><div class="weg-nm">Tether USD<small>TRC-20</small></div><div class="weg-v">1 240.50</div></div>
+            <div class="weg-row"><div class="weg-ic trx">T</div><div class="weg-nm">TRON<small>TRX</small></div><div class="weg-v">820.0</div></div>
+            <div class="weg-acts"><button class="weg-b">Получить</button><button class="weg-b g">Отправить</button></div>
+          </div>
+        </div></div></div>
+        <h3>Заблокировано на вашем устройстве</h3>
+        <p>PIN охраняет приложение — и он есть только у вас.</p>
+      </div>
+      <!-- chat list -->
+      <div class="show-item reveal">
+        <div class="phone-stage"><div class="phone"><div class="screen"><div class="punch"></div>
+          <div class="clist-app">
+            <div class="statusbar"><span>9:41</span><span class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 22h2v-8H2zM7 22h2V8H7zM12 22h2V4h-2zM17 22h2v-6h-2z"/></svg></span></div>
+            <div class="clist-hd"><span class="t">PHANTOM</span><svg viewBox="0 0 24 24" class="i"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg></div>
+            <div class="crow"><div class="av a"></div><div class="mid"><div class="nm">Alex</div><div class="pv">Отправил документы — глянь как будет время</div></div><div class="rt"><div class="tm">14:32</div><span class="bdg">3</span></div></div>
+            <div class="crow"><div class="av b"></div><div class="mid"><div class="nm">Mara</div><div class="pv">Ок, до завтра</div></div><div class="rt"><div class="tm">09:18</div></div></div>
+            <div class="crow"><div class="av c"></div><div class="mid"><div class="nm">Команда дизайна</div><div class="pv">Голосовое · 0:42</div></div><div class="rt"><div class="tm">08.06</div></div></div>
+            <div class="crow"><div class="av d"></div><div class="mid"><div class="nm">Kai</div><div class="pv">Всегда — сквозное шифрование.</div></div><div class="rt"><div class="tm">Пн</div></div></div>
+          </div>
+        </div></div></div>
+        <h3>Все ваши чаты</h3>
+        <p>Все переписки в одном месте.</p>
+      </div>
+      <!-- dialog -->
+      <div class="show-item reveal">
+        <div class="phone-stage"><div class="phone"><div class="screen"><div class="punch"></div>
+          <div class="app">
+            <div class="statusbar"><span>9:41</span><span class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 22h2v-8H2zM7 22h2V8H7zM12 22h2V4h-2zM17 22h2v-6h-2z"/></svg></span></div>
+            <div class="pchat-hd"><span class="bk"><svg viewBox="0 0 24 24" class="i"><path d="M15 18l-6-6 6-6"/></svg></span><div class="av" style="background:linear-gradient(135deg,#C9B79F,#8A7A5E)">M</div><div><div class="nm">Mara</div><div class="pr">в сети</div></div></div>
+            <div class="pmsgs">
+              <div class="bub them">Дошло?<span class="tm">09:10</span></div>
+              <div class="bub me">Да — запечатано и доставлено.<span class="tm">09:11 <span class="tick">✓✓</span></span></div>
+              <div class="bub them">Ок, до завтра<span class="tm">09:18</span></div>
+            </div>
+            <div class="pcomposer"><div class="field"><svg viewBox="0 0 24 24" class="i"><path d="m21 15-5-5L5 21"/><circle cx="9" cy="9" r="2"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg>Сообщение…</div><div class="send"><svg viewBox="0 0 24 24" class="i"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z"/></svg></div></div>
+          </div>
+        </div></div></div>
+        <h3>Каждое сообщение — сквозное</h3>
+        <p>Зелёный — вы, серый — собеседник. Запечатано с обеих сторон.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BYPASS -->
+  <section class="wrap"><div class="bypass">
+    <div class="sec-head"><span class="eyebrow">Анти-цензура</span><h2>Находит путь в обход</h2></div>
+    <div class="bypass-vis reveal">
+      <svg viewBox="0 0 780 240" preserveAspectRatio="none">
+        <path class="bp-track" d="M130 120 C 280 120 300 40 390 40 C 480 40 500 120 650 120"/>
+        <path class="bp-track" d="M130 120 C 280 120 300 200 390 200 C 480 200 500 120 650 120"/>
+        <path class="bp-track" d="M130 120 C 305 120 330 76 390 76 C 450 76 475 120 650 120"/>
+        <path class="bp-track" d="M130 120 C 305 120 330 164 390 164 C 450 164 475 120 650 120"/>
+        <path class="bp-flow f1" d="M130 120 C 280 120 300 40 390 40 C 480 40 500 120 650 120"/>
+        <path class="bp-flow f2" d="M650 120 C 500 120 480 200 390 200 C 300 200 280 120 130 120"/>
+        <path class="bp-flow f3" d="M130 120 C 305 120 330 76 390 76 C 450 76 475 120 650 120"/>
+        <path class="bp-flow f4" d="M650 120 C 450 120 450 164 390 164 C 330 164 305 120 130 120"/>
+      </svg>
+      <div class="bp-n you" style="left:16.7%;top:50%"><div class="dot"><svg viewBox="0 0 24 24" class="i"><path d="M12 22C12 22 20 18 20 12L20 5L12 2L4 5L4 12C4 18 12 22 12 22Z"/><path d="M9 12L11 14L15 10"/></svg></div><div class="lb">Вы</div></div>
+      <div class="bp-n block" style="left:50%;top:50%"><div class="dot"><svg viewBox="0 0 24 24" class="i"><path d="M12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2Z"/><path d="M4.93 4.93L19.07 19.07"/></svg></div><div class="lb">Блокировка</div></div>
+      <div class="bp-n relay" style="left:83.3%;top:50%"><div class="dot"><svg viewBox="0 0 24 24" class="i"><path d="M12 22C12 22 20 18 20 12L20 5L12 2L4 5L4 12C4 18 12 22 12 22Z"/><path d="M9 12L11 14L15 10"/></svg></div><div class="lb">Собеседник</div></div>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="n">01</div><h3>Вы отправляете</h3><p>Сообщение шифруется на вашем устройстве ещё до отправки.</p></div>
+      <div class="step reveal"><div class="n">02</div><h3>Сеть блокирует</h3><p>Цензура пытается остановить незнакомый трафик и отключить приложение.</p></div>
+      <div class="step reveal"><div class="n">03</div><h3>Путь находится</h3><p>PHANTOM маскируется под обычный веб-трафик и обходит блокировку.</p></div>
+    </div>
+  </div></section>
+
+  <!-- START -->
+  <section class="wrap" id="start">
+    <div class="sec-head"><span class="eyebrow">Начало работы</span><h2>В приложении за две минуты</h2></div>
+    <div class="start">
+      <div class="scard reveal"><h4>Скачайте и откройте</h4><p>Нажмите «Скачать», откройте .apk и разрешите установку из этого источника, когда Android попросит.</p></div>
+      <div class="scard reveal"><h4>Придумайте никнейм</h4><p>Без номера, без почты, без кода — скачанное приложение уже и есть ваше приглашение.</p></div>
+      <div class="scard reveal"><h4>Задайте PIN</h4><p>Выберите PIN, который запирает приложение на вашем устройстве. Без него ничего не откроется.</p></div>
+      <div class="scard reveal"><h4>Пригласите своих</h4><p>Поделитесь PHANTOM или создайте приглашение прямо в приложении — написать вам может только тот, кого вы добавили.</p></div>
+    </div>
+    <div class="qr-note reveal"><svg viewBox="0 0 24 24" class="i"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3m4 0v4m-4 0h4m-7-7v7"/></svg><div><h4>Подключение по QR</h4><p>Отсканируйте QR-код друга, чтобы добавить его, или код группы, чтобы войти — лицом к лицу, без никнеймов. Самый приватный способ связаться.</p></div></div>
+    <div class="warn"><b>ВАЖНО</b>Для обновления <span class="ok">СТАВЬТЕ НОВЫЙ ФАЙЛ ПОВЕРХ</span> старого приложения. Не удаляйте — это сотрёт аккаунт и переписку.</div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="wrap"><div class="sec-head"><h2>Вопросы</h2></div><div class="faq">
+    <details><summary>Могут ли мне написать незнакомцы?</summary><p>Нет. Начать переписку может только тот, кого вы сами добавили — поэтому в PHANTOM нет спама и скамеров.</p></details>
+    <details><summary>Это правда анонимно?</summary><p>Да. Без номера, без почты, без входа через другой аккаунт. Ваша личность — это ключи на вашем телефоне.</p></details>
+    <details><summary>Это бесплатно?</summary><p>Да, полностью. Без подписки и рекламы.</p></details>
+    <details><summary>Нужен инвайт или код?</summary><p>Нет — просто скачайте и начните. Само приложение и есть ваше приглашение.</p></details>
+    <details><summary>Есть версия для iPhone?</summary><p>Пока нет — только Android.</p></details>
+    <details><summary>Что если я потеряю телефон?</summary><p>Ваша личность — это ключи на устройстве, поэтому делайте резервную копию в приложении: Настройки → Резервная копия. Без копии потерянный телефон означает новую личность.</p></details>
+    <details><summary>Почему PHANTOM ставится как .apk, а не из Google Play?</summary><p>Магазины приложений можно заблокировать, удалить из них приложение по требованию или ограничить в отдельной стране — и тогда мессенджер, созданный обходить цензуру, исчез бы ровно там, где он нужнее всего. Поэтому PHANTOM распространяется напрямую: <b style="color:var(--text)">файл .apk — это официальный формат установщика приложения для Android</b>. Вы скачиваете его с этой страницы и ставите сами, ни от кого не завися. Android позволяет устанавливать приложения из файла — нужно лишь один раз разрешить установку из этого источника.</p></details>
+  </div></section>
+
+  <!-- DOWNLOAD -->
+  <section class="wrap download"><div class="box reveal">
+    <h2>Общайтесь свободно.</h2>
+    <p>Бесплатно · Android · без номера и почты</p>
+    <a class="btn btn-primary" href="https://github.com/gotoPhantom/app/releases/latest/download/app.apk" rel="nofollow"><svg viewBox="0 0 24 24" fill="currentColor" style="stroke:none"><path d="M16.5 6.1l1.2-2.1a.42.42 0 0 0-.73-.42l-1.23 2.13a8.3 8.3 0 0 0-7.48 0L7.03 3.57a.42.42 0 0 0-.73.42L7.5 6.1A7.6 7.6 0 0 0 3.9 12.4h16.2A7.6 7.6 0 0 0 16.5 6.1ZM9.1 10.1a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm5.8 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>Скачать для Android</a>
+    <div style="margin-top:14px"><button class="btn btn-support" data-support><svg viewBox="0 0 24 24" class="i"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A4.5 4.5 0 0 0 12 5 4.5 4.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg>Поддержать проект</button></div>
+  </div></section>
+</main>
+
+<footer><div class="wrap">
+  <span class="brand" style="display:flex;align-items:center;gap:8px;font-family:var(--head);letter-spacing:2px"><svg viewBox="0 0 24 24" fill="none" style="width:18px;height:18px;color:var(--accent)"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>PHANTOM</span>
+  <span>Без аналитики. Без трекеров.</span>
+  <span class="ver">Версия <span class="verf">…</span></span>
+</div></footer>
+
+<div class="modal-root" id="modal"><div class="modal-scrim" data-close></div><div class="modal-card">
+  <div class="mi" id="m-ic"></div>
+  <div class="mono-ttl" id="m-mono" style="display:none"></div>
+  <h3 id="m-title"></h3>
+  <p id="m-body"></p>
+  <button class="close" data-close>Закрыть</button>
+</div></div>
+
+<div class="modal-root" id="smodal"><div class="modal-scrim" data-sclose></div><div class="modal-card support-card">
+  <div class="mi"><svg viewBox="0 0 24 24" class="i"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A4.5 4.5 0 0 0 12 5 4.5 4.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg></div>
+  <h3>Поддержать проект</h3>
+  <p>PHANTOM бесплатен и без рекламы. Если хотите помочь развитию — поддержите криптовалютой: любая сумма идёт на серверы, туннели и новые функции. Отсканируйте QR-код кошельком или скопируйте адрес.</p>
+  <img class="qr" src="donation-qr.png" alt="QR-код кошелька PHANTOM" width="188" height="188">
+  <div class="mono-ttl">USDT · TRC-20 (сеть TRON)</div>
+  <div class="addr" id="don-addr">TDJvyxiv7jBVPYUFEetJT8asDaNSvzPDx2</div>
+  <button class="copy" id="don-copy">Скопировать адрес</button>
+  <button class="close" data-sclose>Закрыть</button>
+</div></div>
+
+<script>
+(function(){
+  "use strict";
+  var ICON={
+    lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    ban:'<circle cx="12" cy="12" r="9"/><path d="M5 5l14 14"/>',
+    users:'<circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M17 11l2 2 3.5-3.5"/>',
+    ghost:'<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M4 4l16 16"/>',
+    trash:'<path d="M3 6h18M8 6V4h8v2m-9 0 1 14h8l1-14"/>',
+    timer:'<circle cx="12" cy="13" r="8"/><path d="M12 13V9M9 2h6"/>',
+    flame:'<path d="M12 2c2 4 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 .5 1.5 1.5 2 2 2-1-2 0-4-1-7Z"/>',
+    eyeoff:'<path d="M9.9 4.2A9 9 0 0 1 12 4c5 0 9 5 9 8a12 12 0 0 1-2 2.6M6.6 6.6A12 12 0 0 0 3 12c0 3 4 8 9 8a9 9 0 0 0 4-.9M3 3l18 18"/>',
+    server:'<rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 8h.01M7 17h.01"/>',
+    network:'<circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5v4M11 13l-4 4M13 13l4 4"/>',
+    shield:'<path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/>',
+    shieldcheck:'<path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/><path d="m8.5 12 2.4 2.4L15.8 9.6"/>',
+    key:'<circle cx="8" cy="8" r="3.4"/><path d="m10.5 10.5 8.5 8.5m-2.5-2.5 2-2m-4-1 2-2"/>',
+    smartphone:'<rect x="6" y="3" width="12" height="18" rx="2.5"/><path d="M10 18h4"/>',
+    phone:'<path d="M5 4h3l2 5-2 1a11 11 0 0 0 5 5l1-2 5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    refresh:'<path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/>',
+    link:'<path d="M9 15l6-6M10 6l1-1a4 4 0 0 1 6 6l-1 1M14 18l-1 1a4 4 0 0 1-6-6l1-1"/>',
+    eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+    layers:'<path d="M12 2 2 7l10 5 10-5-10-5ZM2 17l10 5 10-5M2 12l10 5 10-5"/>'
+  };
+  function svg(name){return '<svg viewBox="0 0 24 24" class="i">'+(ICON[name]||'')+'</svg>';}
+
+  /* ── feature cards (clickable → modal) ── */
+  var WHY=[
+    {ic:'ban',h:'Никакого спама',p:'Посторонние не могут вам написать. Начать чат может только тот, кого вы добавили — поэтому здесь нет спама и скамеров by design.',
+     m:'Большинство мессенджеров открыты для всех: любой, кто узнал ваш номер или ник, может писать вам. В PHANTOM по-другому. Переписку может начать только человек, которого вы сами добавили в контакты. Никаких рассылок, незнакомцев, ботов и мошенников — общение по приглашению, а не по умолчанию.'},
+    {ic:'users',h:'Ваш приватный круг',p:'В группы не попадают чужие. Вы собираете пространство из доверенных людей, и больше туда никто не пролезет.',
+     m:'Группа в PHANTOM — это закрытое пространство доверенных людей. Посторонний не может «найти» её, попроситься или попасть случайно. Состав контролируете вы и те, кому вы доверили приглашать. Это не публичный канал — это ваш круг.'},
+    {ic:'smartphone',h:'По-настоящему анонимно',p:'Без телефона, без почты, без входа через другой аккаунт. Ваша личность — это просто ключи на телефоне.',
+     m:'Регистрация не требует номера, почты или входа через соцсети. Аккаунт — это пара криптографических ключей, которые создаются прямо на вашем телефоне. Отдавать нечего: нет базы данных с вашим именем, телефоном или почтой, которую можно было бы запросить или украсть.'},
+    {ic:'trash',h:'Удалил — стёрто у всех',p:'Удаляете сообщение — и оно исчезает со всех устройств, и вашего, и собеседника, навсегда. Копий не остаётся.',
+     m:'Удаление в PHANTOM — настоящее. Сообщение исчезает не только у вас, но и на устройстве собеседника, безвозвратно. На сервере оно не хранится изначально, резервных копий «на всякий случай» нет. Передумали — стёрли у всех.'}
+  ];
+  var PROTECT=[
+    {ic:'lock',tag:'Шифрование',h:'Сквозное шифрование',p:'Прочитать сообщения можете только вы и собеседник. Сервер видит лишь зашифрованные данные.',mref:'e2e'},
+    {ic:'ghost',tag:'Личность',h:'Без номера и почты',p:'Аккаунт — это никнейм и ключи на вашем устройстве. Ничто не связывает его с вами.',
+     m:'Ваша личность в PHANTOM не привязана ни к номеру телефона, ни к почте, ни к какому-либо внешнему аккаунту. Это никнейм и ключи, которые живут только на вашем устройстве. Связать аккаунт с реальным человеком технически нечем.'},
+    {ic:'key',tag:'Ключи',h:'Ключи не покидают телефон',p:'Ключи шифрования создаются и хранятся только на вашем устройстве — всегда.',mref:'local'},
+    {ic:'timer',tag:'Исчезающие',h:'Таймер и сгорающие сообщения',p:'Поставьте срок жизни сообщению — оно исчезнет у обоих. Сгорающие читаются один раз и пропадают.',
+     m:'Любому чату можно задать таймер: сообщения автоматически исчезают у обоих собеседников через выбранное время — минуту, час, день. Отдельный режим «сгорающих» сообщений: получатель видит сообщение один раз, после прочтения оно стирается. Это не пометка «удалено», а реальное исчезновение.'},
+    {ic:'eyeoff',tag:'Приватность экрана',h:'Скриншоты заблокированы',p:'PHANTOM не даёт снять скриншот внутри приложения — экран защищён на уровне системы.',
+     m:'Внутри PHANTOM нельзя сделать скриншот или запись экрана: это блокируется на уровне операционной системы. В списке недавних приложений содержимое тоже скрыто. Переписку нельзя незаметно «сфотографировать» из самого приложения.'},
+    {ic:'server',tag:'Хранение',h:'На сервере ничего не лежит',p:'Сервер не хранит переписку. Доставил сообщение — удалил. История живёт только у вас.',mref:'noserver'},
+    {ic:'shield',tag:'Против цензуры',h:'Создан против цензуры',p:'Когда сеть блокирует обычные приложения, PHANTOM находит рабочий путь и маскирует трафик под обычный веб.',
+     m:'PHANTOM рассчитан на сети, где обычные мессенджеры и VPN заблокированы. Он автоматически перебирает способы подключения и маскирует свой трафик под обычный защищённый веб — так, что отличить его от рядового просмотра сайтов крайне трудно. Вам не нужно ничего настраивать: приложение само находит рабочий путь.'},
+    {ic:'network',tag:'Федерация',h:'Сеть, а не один сервер',p:'PHANTOM развивается как федерация независимых узлов — отключить «один центр» нельзя.',mref:'federation'},
+    {ic:'phone',tag:'Звонки',h:'Зашифрованные звонки',p:'Голосовые звонки шифруются сквозным образом и маскируются под обычное защищённое соединение.',
+     m:'Голосовые звонки в PHANTOM защищены тем же сквозным шифрованием, что и переписка. Содержимое разговора недоступно ни серверу, ни кому-либо в сети, а сам трафик звонка выглядит как обычное защищённое веб-соединение.'}
+  ];
+  /* extra modal-only content reused by mref */
+  var MODALS={
+    e2e:{ic:'lock',h:'Сквозное шифрование',p:'Каждое сообщение шифруется на твоём устройстве и расшифровывается только на устройстве собеседника. Ни сервер, ни разработчики, ни кто-либо ещё не имеют технической возможности прочитать твои сообщения. Даже по решению суда — потому что у нас просто нет ключей.'},
+    local:{ic:'key',h:'Ключи не покидают телефон',p:'Все приватные ключи генерируются прямо на твоём телефоне, хранятся в защищённом хранилище операционной системы и никогда не передаются на сервер. На сервере хранятся только публичные части — это как замок без ключа. Можно смотреть, но открыть нечем.'},
+    noserver:{ic:'server',h:'На сервере ничего не хранится',p:'Сервер нужен только чтобы доставить сообщение. Как только собеседник его получил — сервер удаляет сообщение у себя. Переписка живёт исключительно на ваших устройствах: у нас нет архива чатов, который можно было бы запросить, взломать или потерять. Нечего хранить — нечего и выдавать.'},
+    federation:{ic:'network',h:'Федерация: сеть вместо центра',p:'PHANTOM спроектирован так, чтобы не зависеть от единственного сервера. Это федерация — сеть независимых узлов. Более того, любой пользователь может по своей инициативе поднять дополнительный узел или туннель и стать частью сети. Чем больше точек входа, тем труднее всё это заблокировать: нет «рубильника», отключив который, можно остановить мессенджер.'}
+  };
+  /* crypto term modals */
+  var TERMS=[
+    {k:'Signal Protocol',mono:'SIGNAL PROTOCOL',ic:'shieldcheck',p:'Мы используем тот же криптографический протокол, который применяется в крупнейших мессенджерах мира с миллиардами пользователей. Протокол имеет открытый исходный код, многократно проверен независимыми криптографами. За годы существования — ни одного подтверждённого случая взлома.'},
+    {k:'AES-256',mono:'AES-256-GCM',ic:'lock',p:'Содержимое каждого сообщения шифруется алгоритмом AES-256 — это стандарт, который используют банки и государства для защиты самой чувствительной информации. Перебрать такой ключ невозможно: даже всем вычислительным мощностям планеты на это не хватило бы времени Вселенной.'},
+    {k:'X25519',mono:'X25519',ic:'link',p:'Когда ты пишешь кому-то впервые, устройства проводят многоступенчатый криптографический обмен для создания общего секрета. Ни одна сторона не передаёт свои ключи — они совместно вычисляют секрет, который никогда не передавался по сети. Это работает даже если собеседник не в сети.'},
+    {k:'Double Ratchet',mono:'DOUBLE RATCHET',ic:'refresh',p:'Допустим, невозможное произошло и кто-то получил доступ к текущему ключу. В большинстве систем это катастрофа. Здесь — нет. Через несколько сообщений система автоматически генерирует полностью новые ключи, и злоумышленник снова теряет доступ. Без каких-либо действий с твоей стороны.'},
+    {k:'Forward secrecy',mono:'FORWARD SECRECY',ic:'clock',p:'Ключи шифрования не хранятся после использования. Они существуют ровно столько, сколько нужно для шифрования и расшифровки. Даже если устройство попадёт в чужие руки в будущем — прочитать прошлую переписку невозможно. Ключей для этого уже не существует в природе.'}
+  ];
+  var CFEATS=[
+    {ic:'clock',h:'Прямая секретность',p:'Ключи меняются с каждым сообщением. Даже если один раскроют, прошлая и будущая переписка останется закрытой.',m:'Ключи шифрования не хранятся после использования. Они существуют ровно столько, сколько нужно для шифрования и расшифровки. Даже если устройство попадёт в чужие руки в будущем — прочитать прошлую переписку невозможно. Ключей для этого уже не существует в природе.'},
+    {ic:'smartphone',h:'Ключи на устройстве',p:'Приватные ключи создаются на телефоне и никогда его не покидают. Сервер видит только шифртекст.',m:'Все приватные ключи генерируются прямо на твоём телефоне, хранятся в защищённом хранилище операционной системы и никогда не передаются на сервер. На сервере хранятся только публичные части — это как замок без ключа. Можно смотреть, но открыть нечем.'},
+    {ic:'layers',h:'Открытый и проверенный',p:'Протокол опубликован открыто — его внедрили крупнейшие мессенджеры. Мы используем проверенную библиотеку, а не самодельную крипту.',m:'Мы используем тот же криптографический протокол, который применяется в крупнейших мессенджерах мира с миллиардами пользователей. Протокол имеет открытый исходный код, многократно проверен независимыми криптографами. За годы существования — ни одного подтверждённого случая взлома.'},
+    {ic:'users',h:'Группы — так же надёжно',p:'Личные и групповые чаты используют одно и то же сквозное шифрование — без слабых обходных путей.',m:'Групповые чаты защищены тем же сквозным шифрованием, что и личные. Каждый участник держит свои ключи, сообщение шифруется для каждого отдельно, а сервер по-прежнему видит только шифртекст. Никаких упрощений ради удобства — группа так же надёжна, как переписка один на один.'}
+  ];
+
+  function card(d){
+    var more=d.m||d.mref?'<span class="more">Подробнее '+svg('refresh').replace('refresh','')+'<svg viewBox="0 0 24 24" class="i"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>':'';
+    var tag=d.tag?'<div class="tag">'+d.tag+'</div>':'';
+    return '<button class="card reveal" data-card="'+d.id+'"><div class="ic">'+svg(d.ic)+'</div>'+tag+'<h3>'+d.h+'</h3><p>'+d.p+'</p>'+more+'</button>';
+  }
+  var reg={};
+  function build(list,host){
+    var h='';list.forEach(function(d,i){d.id=host+i;reg[d.id]={ic:d.ic,h:d.h,p:(d.m||(d.mref&&MODALS[d.mref]&&MODALS[d.mref].p)||d.p),mono:null};h+=card(d);});
+    document.getElementById(host).innerHTML=h;
+  }
+  build(WHY,'why-grid');build(PROTECT,'protect-grid');
+
+  document.getElementById('terms').innerHTML=TERMS.map(function(t,i){return '<button class="term" data-term="'+i+'">'+t.k+'<span class="plus">+</span></button>';}).join('');
+  document.getElementById('crypto-feats').innerHTML=CFEATS.map(function(c,i){var id='cf'+i;reg[id]={ic:c.ic,h:c.h,p:c.m||c.p};return '<button class="cf reveal" data-card="'+id+'"><div class="ci">'+svg(c.ic)+'</div><div><h3>'+c.h+'</h3><p>'+c.p+'</p><span class="more">Подробнее <svg viewBox="0 0 24 24" class="i"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></button>';}).join('');
+
+  /* ── modal ── */
+  var modal=document.getElementById('modal'),mIc=document.getElementById('m-ic'),mMono=document.getElementById('m-mono'),mT=document.getElementById('m-title'),mB=document.getElementById('m-body');
+  function open(o){mIc.innerHTML=svg(o.ic);if(o.mono){mMono.style.display='block';mMono.textContent=o.mono;}else{mMono.style.display='none';}mT.textContent=o.h;mB.textContent=o.p;modal.classList.add('open');document.body.style.overflow='hidden';}
+  var smodal=document.getElementById('smodal');
+  function close(){modal.classList.remove('open');smodal.classList.remove('open');document.body.style.overflow='';}
+  document.addEventListener('click',function(e){
+    var c=e.target.closest('[data-card]');if(c){open(reg[c.getAttribute('data-card')]);return;}
+    var t=e.target.closest('[data-term]');if(t){var d=TERMS[+t.getAttribute('data-term')];open({ic:d.ic,h:d.k,mono:d.mono,p:d.p});return;}
+    if(e.target.closest('[data-support]')){smodal.classList.add('open');document.body.style.overflow='hidden';return;}
+    var cp=e.target.closest('#don-copy');if(cp){try{navigator.clipboard.writeText(document.getElementById('don-addr').textContent.trim());}catch(_){}cp.textContent='Адрес скопирован';cp.classList.add('done');setTimeout(function(){cp.textContent='Скопировать адрес';cp.classList.remove('done');},1800);return;}
+    if(e.target.closest('[data-close],[data-sclose]'))close();
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+
+  /* ── Cybercore: rising energy beams — thin core, soft glow (hero only) ── */
+  var scene=document.getElementById('scene'),N=64,h='';
+  for(var i=0;i<N;i++){
+    var dur=(Math.random()*4+7).toFixed(2);          // 7–11s rise+fade
+    var w=Math.floor(Math.random()*2)+1;             // 1–2px core (orig)
+    var r=Math.random(),cls=r<0.18?'g':(r<0.32?'s':'');
+    h+='<span class="beam '+cls+'" style="left:'+(Math.random()*100).toFixed(1)+'%;width:'+w+'px;'+
+       'animation-delay:'+(-Math.random()*dur).toFixed(2)+'s;animation-duration:'+dur+'s,'+dur+'s"></span>';
+  }
+  scene.innerHTML=h;
+
+  /* ── version ── */
+  function setVer(v){document.querySelectorAll('#ver,.verf').forEach(function(e){e.textContent=v;});}
+  fetch('latest.txt',{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(v){v=v.trim();if(/^\d{2}\.\d{2}\.\d{2}-\d{2}:\d{2}$/.test(v))setVer(v);}}).catch(function(){});
+
+  /* ── reveal ── */
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.reveal').forEach(function(s){io.observe(s);});
+  }else{document.querySelectorAll('.reveal').forEach(function(s){s.classList.add('in');});}
+
+  /* ── lang ── */
+  document.querySelectorAll('.langs button').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.langs button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');});});
+
+  /* ── wallet easter egg: type 0611 on the showcase PIN pad ── */
+  (function(){
+    var pin=document.querySelector('.show-item .pin'); if(!pin) return;
+    var pad=pin.querySelector('.numpad'); var egg=document.getElementById('walletEgg');
+    var wrap=pin.querySelector('.dots'); var dots=pin.querySelectorAll('.dots i');
+    var shield=pin.querySelector('.shieldbox');
+    if(!pad||!egg||!wrap) return;
+    var buf='', lock=false;
+    function paint(){dots.forEach(function(d,i){if(i<buf.length){d.classList.add('f');}else{d.classList.remove('f');}});}
+    pad.addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b||lock) return;
+      var t=(b.textContent||'').trim();
+      if(/^[0-9]$/.test(t)){
+        if(buf.length>=4){buf='';paint();}
+        buf+=t; paint();
+        if(buf.length===4){
+          if(buf==='0611'){ lock=true; if(shield)shield.classList.add('ok'); setTimeout(function(){egg.classList.add('show');lock=false;},260); }
+          else { lock=true; wrap.classList.add('err'); if(shield)shield.classList.add('err'); setTimeout(function(){wrap.classList.remove('err');if(shield)shield.classList.remove('err');buf='';paint();lock=false;},560); }
+        }
+      }else{ buf=buf.slice(0,-1); paint(); egg.classList.remove('show'); if(shield)shield.classList.remove('ok','err'); }
+    });
+  })();
+})();
+</script>
+</body>
+</html>
